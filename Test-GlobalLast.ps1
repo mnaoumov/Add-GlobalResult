@@ -53,3 +53,17 @@ if ($Global:LAST -isnot [System.Diagnostics.Process])
 {
     throw "`$Global:LAST extected to be System.Diagnostics.Process, actual: $($Global:LAST.GetType())"
 }
+
+$null | Out-Default
+
+if ($Global:LAST -ne $null)
+{
+    throw "`$Global:LAST extected to be null, actual: $$Global:LAST"
+}
+
+@() | Out-Default
+
+if ($Global:LAST -ne @())
+{
+    throw "`$Global:LAST extected to be @(), actual: $$Global:LAST"
+}
