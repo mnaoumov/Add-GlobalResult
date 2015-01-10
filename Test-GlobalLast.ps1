@@ -21,7 +21,7 @@ if (Test-Path Variable:\LAST)
     Remove-Item -Path Variable:\LAST
 }
 
-. "$(PSScriptRoot)\GlobalLast.ps1"
+. "$(PSScriptRoot)\Add-GlobalLast.ps1"
 
 42 | Out-Default
 
