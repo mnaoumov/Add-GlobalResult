@@ -14,7 +14,7 @@ function Out-Default
         $wrappedCmdlet = $ExecutionContext.InvokeCommand.GetCmdlet("Out-Default")
         $sb = { & $wrappedCmdlet @PSBoundParameters }
         $__sp = $sb.GetSteppablePipeline()
-        $__sp.Begin($pscmdlet)
+        $__sp.Begin($PScmdlet)
         $tempLast = @()
     }
     process
