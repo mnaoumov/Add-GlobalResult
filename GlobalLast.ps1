@@ -89,5 +89,6 @@ function Out-Default
     }
 }
 
-Generate-FormatCmdlet -CmdletName Format-List
-
+Get-Command -Verb Format -Module Microsoft.PowerShell.Utility | `
+    Select -ExpandProperty Name | `
+    ForEach-Object -Process { Generate-FormatCmdlet -CmdletName $_ }
