@@ -29,3 +29,10 @@ if ($Global:LAST -ne 42)
 {
     throw "`$Global:LAST extected to be 42, actual: $Global:LAST"
 }
+
+1..10 | Out-Default
+
+if (Compare-Object $Global:LAST 1..10)
+{
+    throw "`$Global:LAST extected to be 1..10, actual: $Global:LAST"
+}
