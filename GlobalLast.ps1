@@ -15,6 +15,7 @@ function Out-Default
         $sb = { & $wrappedCmdlet @PSBoundParameters }
         $__sp = $sb.GetSteppablePipeline()
         $__sp.Begin($pscmdlet)
+        $tempLast = @()
     }
     process
     {
@@ -43,12 +44,13 @@ function Out-Default
         }
         if ($do_process)
         {
-            $global:LAST = $_;
+            $tempLast += $_
             $__sp.Process($_)
         }
     }
     end
     {
         $__sp.End()
+        $Global:LAST = $tempLast
     }
 }
