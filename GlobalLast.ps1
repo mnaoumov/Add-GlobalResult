@@ -11,71 +11,20 @@ function PSScriptRoot { $MyInvocation.ScriptName | Split-Path }
 
 trap { throw $Error[0] }
 
-# Add Out-Default function to $PROFILE script
+$command = Get-Command -Name Format-List -CommandType Cmdlet
+$metadata = New-Object -TypeName System.Management.Automation.CommandMetaData -ArgumentList @($command)
 
-function Format-List
-{
-[CmdletBinding(HelpUri='http://go.microsoft.com/fwlink/?LinkID=113302')]
-param(
-    [Parameter(ValueFromPipeline=$true)]
-    [psobject]
-    ${InputObject},
-
-    [Parameter(Position=0)]
-    [System.Object[]]
-    ${Property},
-
-    [System.Object]
-    ${GroupBy},
-
-    [string]
-    ${View},
-
-    [switch]
-    ${ShowError},
-
-    [switch]
-    ${DisplayError},
-
-    [switch]
-    ${Force},
-
-    [ValidateSet('CoreOnly','EnumOnly','Both')]
-    [string]
-    ${Expand})
-
-begin
-{
-    try {
-        $outBuffer = $null
-        if ($PSBoundParameters.TryGetValue('OutBuffer', [ref]$outBuffer))
-        {
-            $PSBoundParameters['OutBuffer'] = 1
-        }
-        $wrappedCmd = $ExecutionContext.InvokeCommand.GetCommand('Format-List', [System.Management.Automation.CommandTypes]::Cmdlet)
-        $scriptCmd = {& $wrappedCmd @PSBoundParameters }
-        $steppablePipeline = $scriptCmd.GetSteppablePipeline($myInvocation.CommandOrigin)
-        $steppablePipeline.Begin($PSCmdlet)
-        $tempLast = @()
-    } catch {
-        throw
-    }
-}
-
-process
-{
-    try {
-        $tempLast += @(, $_)
-        $steppablePipeline.Process($_)
-    } catch {
-        throw
-    }
-}
-
-end
-{
-    try {
-        $steppablePipeline.End()
+$functionText = [System.Management.Automation.ProxyCommand]::Create($metadata)
+$functionText = $functionText -replace "begin\s*\{\s*try\s*\{", ("`$0`n" +
+@'
+$tempLast = @()
+'@)
+$functionText = $functionText -replace "process\s*\{\s*try\s*\{", ("`$0`n" +
+@'
+$tempLast += @(, $$_)
+'@)
+$functionText = $functionText -replace "end\s*\{\s*try\s*\{", ("`$0`n" +
+@'
         if ($tempLast.Length -eq 1)
         {
             $Global:LastResult = $tempLast[0]
@@ -86,20 +35,9 @@ end
         }
 
         $Global:LastResultCmdletWasFormat = $true
+'@)
 
-    } catch {
-        throw
-    }
-}
-<#
-
-.ForwardHelpTargetName Format-List
-.ForwardHelpCategory Cmdlet
-
-#>
-
-
-}
+Set-Item -Path Function:Global:Format-List -Value $functionText
 
 function Out-Default
 {
@@ -142,3 +80,5 @@ function Out-Default
         }
     }
 }
+
+
