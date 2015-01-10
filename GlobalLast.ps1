@@ -65,14 +65,14 @@ end
         $steppablePipeline.End()
         if ($tempLast.Length -eq 1)
         {
-            $Global:LAST = $tempLast[0]
+            $Global:LastResult = $tempLast[0]
         }
         else
         {
-            $Global:LAST = $tempLast
+            $Global:LastResult = $tempLast
         }
 
-        $Global:LastCmdletWasFormat = $true
+        $Global:LastResultCmdletWasFormat = $true
 
     } catch {
         throw
@@ -117,15 +117,15 @@ function Out-Default
 
         if ((Test-Path Variable:Global:LastResultCmdletWasFormat) -and ($Global:LastResultCmdletWasFormat))
         {
-            $Global:LastCmdletWasFormat = $false
+            $Global:LastResultCmdletWasFormat = $false
         }
         elseif ($tempLast.Length -eq 1)
         {
-            $Global:LAST = $tempLast[0]
+            $Global:LastResult = $tempLast[0]
         }
         else
         {
-            $Global:LAST = $tempLast
+            $Global:LastResult = $tempLast
         }
     }
 }

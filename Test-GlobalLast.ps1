@@ -25,23 +25,23 @@ if (Test-Path Variable:\LAST)
 
 42 | Out-Default
 
-if ($Global:LAST -ne 42)
+if ($Global:LastResult -ne 42)
 {
-    throw "`$Global:LAST extected to be 42, actual: $Global:LAST"
+    throw "`$Global:LastResult extected to be 42, actual: $Global:LastResult"
 }
 
 1..10 | Out-Default
 
-if (Compare-Object $Global:LAST (1..10))
+if (Compare-Object $Global:LastResult (1..10))
 {
-    throw "`$Global:LAST extected to be 1..10, actual: $Global:LAST"
+    throw "`$Global:LastResult extected to be 1..10, actual: $Global:LastResult"
 }
 
 @(@(1, 2), @(3, 4)) | Out-Default
 
-if (Compare-Object $Global:LAST @(@(1, 2), @(3, 4)))
+if (Compare-Object $Global:LastResult @(@(1, 2), @(3, 4)))
 {
-    throw "`$Global:LAST extected to be @(@(1, 2), @(3, 4)), actual: $Global:LAST"
+    throw "`$Global:LastResult extected to be @(@(1, 2), @(3, 4)), actual: $Global:LastResult"
 }
 
 # should write to host immediately
@@ -49,27 +49,27 @@ if (Compare-Object $Global:LAST @(@(1, 2), @(3, 4)))
 1..10 | % { sleep 1; $_ } | Out-Default
 
 Get-Process -Name explorer | Out-Default
-if ($Global:LAST -isnot [System.Diagnostics.Process])
+if ($Global:LastResult -isnot [System.Diagnostics.Process])
 {
-    throw "`$Global:LAST extected to be System.Diagnostics.Process, actual: $($Global:LAST.GetType())"
+    throw "`$Global:LastResult extected to be System.Diagnostics.Process, actual: $($Global:LastResult.GetType())"
 }
 
 $null | Out-Default
 
-if ($Global:LAST -ne $null)
+if ($Global:LastResult -ne $null)
 {
-    throw "`$Global:LAST extected to be null, actual: $$Global:LAST"
+    throw "`$Global:LastResult extected to be null, actual: $$Global:LastResult"
 }
 
 @() | Out-Default
 
-if ($Global:LAST -ne @())
+if ($Global:LastResult -ne @())
 {
-    throw "`$Global:LAST extected to be @(), actual: $$Global:LAST"
+    throw "`$Global:LastResult extected to be @(), actual: $$Global:LastResult"
 }
 
 Get-Process -Name explorer | Format-List | Out-Default
-if ($Global:LAST -isnot [System.Diagnostics.Process])
+if ($Global:LastResult -isnot [System.Diagnostics.Process])
 {
-    throw "`$Global:LAST extected to be System.Diagnostics.Process, actual: $($Global:LAST.GetType())"
+    throw "`$Global:LastResult extected to be System.Diagnostics.Process, actual: $($Global:LastResult.GetType())"
 }
