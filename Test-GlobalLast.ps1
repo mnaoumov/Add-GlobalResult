@@ -73,3 +73,9 @@ if ($Global:LastResult -isnot [System.Diagnostics.Process])
 {
     throw "`$Global:LastResult extected to be System.Diagnostics.Process, actual: $($Global:LastResult.GetType())"
 }
+
+Get-Process | Format-Table | Out-Default
+if (($Global:LastResult -isnot [Array]) -or ($Global:LastResult[0] -isnot [System.Diagnostics.Process]))
+{
+    throw "`$Global:LastResult extected to be System.Diagnostics.Process, actual: $($Global:LastResult.GetType())"
+}
