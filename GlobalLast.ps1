@@ -19,34 +19,8 @@ function Out-Default
     }
     process
     {
-        $do_process = $true
-        if ($_ -is [System.Management.Automation.ErrorRecord])
-        {
-            if ($_.Exception -is [System.Management.Automation.CommandNotFoundException])
-            {
-                $__command = $_.Exception.CommandName
-                if (Test-Path -Path $__command -PathType container)
-                {
-                    Set-Location $__command
-                    $do_process = $false
-                }
-                elseif ($__command -match '^http://|\.(com|org|net|edu)$')
-                {
-                    if ($matches[0] -ne "http://")
-                    {
-                        $__command = "HTTP://" + $__command
-                    }
-
-                    [System.Diagnostics.Process]::Start($__command)
-                    $do_process = $false
-                }
-            }
-        }
-        if ($do_process)
-        {
-            $tempLast += @(, $_)
-            $__sp.Process($_)
-        }
+        $tempLast += @(, $_)
+        $__sp.Process($_)
     }
     end
     {
