@@ -36,3 +36,10 @@ if (Compare-Object $Global:LAST (1..10))
 {
     throw "`$Global:LAST extected to be 1..10, actual: $Global:LAST"
 }
+
+@(@(1, 2), @(3, 4)) | Out-Default
+
+if (Compare-Object $Global:LAST @(@(1, 2), @(3, 4)))
+{
+    throw "`$Global:LAST extected to be @(@(1, 2), @(3, 4)), actual: $Global:LAST"
+}
