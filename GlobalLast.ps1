@@ -32,48 +32,6 @@ function Generate-CmdletWrapper
     Set-Item -Path "Function:Global:$CmdletName" -Value $functionText
 }
 
-function Out-Default
-{
-    [CmdletBinding(ConfirmImpact = "Medium")]
-    param
-    (
-       [Parameter(ValueFromPipeline = $true)]
-       [System.Management.Automation.PSObject] $InputObject
-    )
-
-    begin
-    {
-        $wrappedCmdlet = $ExecutionContext.InvokeCommand.GetCmdlet("Out-Default")
-        $scriptBlock = { & $wrappedCmdlet @PSBoundParameters }
-        $steppablePipeline = $scriptBlock.GetSteppablePipeline()
-        $steppablePipeline.Begin($PScmdlet)
-        $tempLast = @()
-
-    }
-    process
-    {
-        $tempLast += @(, $_)
-        $steppablePipeline.Process($_)
-    }
-    end
-    {
-        $steppablePipeline.End()
-
-        if ((Test-Path Variable:Global:LastResultCmdletWasFormat) -and ($Global:LastResultCmdletWasFormat))
-        {
-            $Global:LastResultCmdletWasFormat = $false
-        }
-        elseif ($tempLast.Length -eq 1)
-        {
-            $Global:LastResult = $tempLast[0]
-        }
-        else
-        {
-            $Global:LastResult = $tempLast
-        }
-    }
-}
-
 Get-Command -Verb Format -Module Microsoft.PowerShell.Utility | `
     Select -ExpandProperty Name | `
     ForEach-Object -Process `
@@ -101,4 +59,30 @@ Get-Command -Verb Format -Module Microsoft.PowerShell.Utility | `
 
                         $Global:LastResultCmdletWasFormat = $true
                     }
+        }
+
+Generate-CmdletWrapper `
+    -CmdletName Out-Default `
+    -Begin `
+        {
+            $tempLast = @()
+        } `
+    -Process `
+        {
+            $tempLast += @(, $_)
+        } `
+    -End `
+        {
+            if ((Test-Path Variable:Global:LastResultCmdletWasFormat) -and ($Global:LastResultCmdletWasFormat))
+            {
+                $Global:LastResultCmdletWasFormat = $false
+            }
+            elseif ($tempLast.Length -eq 1)
+            {
+                $Global:LastResult = $tempLast[0]
+            }
+            else
+            {
+                $Global:LastResult = $tempLast
+            }
         }
