@@ -51,6 +51,13 @@ function Out-Default
     end
     {
         $__sp.End()
-        $Global:LAST = $tempLast
+        if ($tempLast.Length -eq 1)
+        {
+            $Global:LAST = $tempLast[0]
+        }
+        else
+        {
+            $Global:LAST = $tempLast
+        }
     }
 }
