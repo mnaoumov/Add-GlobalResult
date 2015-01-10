@@ -115,7 +115,7 @@ function Out-Default
     {
         $steppablePipeline.End()
 
-        if ($Global:LastCmdletWasFormat)
+        if ((Test-Path Variable:Global:LastResultCmdletWasFormat) -and ($Global:LastResultCmdletWasFormat))
         {
             $Global:LastCmdletWasFormat = $false
         }
