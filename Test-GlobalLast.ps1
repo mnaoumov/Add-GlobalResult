@@ -49,7 +49,7 @@ if (Compare-Object $Global:LAST @(@(1, 2), @(3, 4)))
 1..10 | % { sleep 1; $_ } | Out-Default
 
 Get-Process -Name explorer | Out-Default
-if ($LAST -isnot [System.Diagnostics.Process])
+if ($Global:LAST -isnot [System.Diagnostics.Process])
 {
     throw "`$Global:LAST extected to be System.Diagnostics.Process, actual: $($Global:LAST.GetType())"
 }
