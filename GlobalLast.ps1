@@ -44,7 +44,7 @@ function Out-Default
         }
         if ($do_process)
         {
-            $tempLast += $_
+            $tempLast += @(, $_)
             $__sp.Process($_)
         }
     }
