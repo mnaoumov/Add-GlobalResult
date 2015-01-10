@@ -16,7 +16,7 @@ if ($Install)
 {
     if (-not (Test-Path $PROFILE))
     {
-        New-Item -Path $PROFILE -ItemType File -Force
+        New-Item -Path $PROFILE -ItemType File -Force | Out-Null
     }
 
     $profileDir = $PROFILE | Split-Path
