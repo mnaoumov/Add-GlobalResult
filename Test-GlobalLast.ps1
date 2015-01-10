@@ -67,3 +67,9 @@ if ($Global:LAST -ne @())
 {
     throw "`$Global:LAST extected to be @(), actual: $$Global:LAST"
 }
+
+Get-Process -Name explorer | Format-List | Out-Default
+if ($Global:LAST -isnot [System.Diagnostics.Process])
+{
+    throw "`$Global:LAST extected to be System.Diagnostics.Process, actual: $($Global:LAST.GetType())"
+}
