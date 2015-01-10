@@ -3,6 +3,7 @@
 [CmdletBinding()]
 param
 (
+    [switch] $Install
 )
 
 $script:ErrorActionPreference = "Stop"
@@ -10,6 +11,29 @@ Set-StrictMode -Version Latest
 function PSScriptRoot { $MyInvocation.ScriptName | Split-Path }
 
 trap { throw $Error[0] }
+
+if ($Install)
+{
+    if (-not (Test-Path $PROFILE))
+    {
+        New-Item -Path $PROFILE -ItemType File -Force
+    }
+
+    $profileDir = $PROFILE | Split-Path
+
+    Copy-Item -Path "$(PSScriptRoot)\Add-GlobalLast.ps1" -Destination $profileDir -Force
+
+    $installLine = ". `"$profileDir\Add-GlobalLast.ps1`""
+
+    if (-not (Get-Content -Path $PROFILE | Where-Object -FilterScrip{ $_ -eq $installLine }))
+    {
+        Add-Content -Path $PROFILE -Value $installLine
+    }
+
+    . $PROFILE
+
+    return
+}
 
 function Generate-CmdletWrapper
 {
