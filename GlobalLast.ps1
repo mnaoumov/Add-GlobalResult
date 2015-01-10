@@ -1,3 +1,16 @@
+#requires -version 2.0
+
+[CmdletBinding()]
+param
+(
+)
+
+$script:ErrorActionPreference = "Stop"
+Set-StrictMode -Version Latest
+function PSScriptRoot { $MyInvocation.ScriptName | Split-Path }
+
+trap { throw $Error[0] }
+
 # Add Out-Default function to $PROFILE script
 
 function Format-List
