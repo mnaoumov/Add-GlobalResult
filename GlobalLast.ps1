@@ -12,19 +12,19 @@ function Out-Default
     begin
     {
         $wrappedCmdlet = $ExecutionContext.InvokeCommand.GetCmdlet("Out-Default")
-        $sb = { & $wrappedCmdlet @PSBoundParameters }
-        $__sp = $sb.GetSteppablePipeline()
-        $__sp.Begin($PScmdlet)
+        $scriptBlock = { & $wrappedCmdlet @PSBoundParameters }
+        $steppablePipeline = $scriptBlock.GetSteppablePipeline()
+        $steppablePipeline.Begin($PScmdlet)
         $tempLast = @()
     }
     process
     {
         $tempLast += @(, $_)
-        $__sp.Process($_)
+        $steppablePipeline.Process($_)
     }
     end
     {
-        $__sp.End()
+        $steppablePipeline.End()
         if ($tempLast.Length -eq 1)
         {
             $Global:LAST = $tempLast[0]
