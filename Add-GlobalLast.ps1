@@ -27,7 +27,7 @@ if ($Install)
 
     if (-not (Get-Content -Path $PROFILE | Where-Object -FilterScrip{ $_ -eq $installLine }))
     {
-        Add-Content -Path $PROFILE -Value $installLine
+        Add-Content -Path $PROFILE -Value "`r`n$installLine"
     }
 
     . $PROFILE
