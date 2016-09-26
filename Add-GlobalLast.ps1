@@ -84,7 +84,7 @@ Get-Command -Verb Format -Module Microsoft.PowerShell.Utility | `
         }
 
 Generate-CmdletWrapper `
-    -Command (Get-Command -Name 'Out-Default' ) `
+    -Command (Get-Command -Name 'Out-Default' -Module Microsoft.PowerShell.Utility, Microsoft.PowerShell.Core) `
     -Begin `
         {
             $tempLast = @()
