@@ -51,6 +51,7 @@ function Generate-CmdletWrapper
     $functionText = $functionText -replace 'begin\s*\{\s*try\s*\{', ('$0' + "`n" + ("$Begin" -replace '\$', '$$$$'))
     $functionText = $functionText -replace 'process\s*\{\s*try\s*\{', ('$0' + "`n" + ("$Process" -replace '\$', '$$$$'))
     $functionText = $functionText -replace 'end\s*\{\s*try\s*\{', ('$0' + "`n" + ("$End" -replace '\$', '$$$$'))
+    $functionText = $functionText -replace "'$($Command.Name)'", "'$($Command.ModuleName)\$($Command.Name)'"
 
     Set-Item -Path "Function:Global:$($Command.Name)" -Value $functionText
 }
