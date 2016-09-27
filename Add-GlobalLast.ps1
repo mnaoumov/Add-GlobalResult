@@ -6,7 +6,7 @@ param
     [switch] $Install
 )
 
-$script:ErrorActionPreference = "Stop"
+$script:ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 function PSScriptRoot { $MyInvocation.ScriptName | Split-Path }
 
@@ -14,7 +14,7 @@ trap { throw $Error[0] }
 
 if ($Install)
 {
-    if (-not (Test-Path $PROFILE))
+    if (-not (Test-Path -Path $PROFILE))
     {
         New-Item -Path $PROFILE -ItemType File -Force | Out-Null
     }
@@ -25,7 +25,7 @@ if ($Install)
 
     $installLine = ". `"$profileDir\Add-GlobalLast.ps1`""
 
-    if (-not (Get-Content -Path $PROFILE | Where-Object -FilterScrip{ $_ -eq $installLine }))
+    if (-not (Get-Content -Path $PROFILE | Where-Object -FilterScript { $_ -eq $installLine }))
     {
         Add-Content -Path $PROFILE -Value "`r`n$installLine"
     }
@@ -39,29 +39,28 @@ function Generate-CmdletWrapper
 {
     param
     (
-        [string] $CmdletName,
+        [System.Management.Automation.CommandInfo] $Command,
         [ScriptBlock] $Begin,
         [ScriptBlock] $Process,
         [ScriptBlock] $End
     )
 
-    $command = Get-Command -Name $CmdletName -CommandType Cmdlet
-    $metadata = New-Object -TypeName System.Management.Automation.CommandMetaData -ArgumentList @($command)
+    $metadata = New-Object -TypeName System.Management.Automation.CommandMetaData -ArgumentList @($Command)
 
     $functionText = [System.Management.Automation.ProxyCommand]::Create($metadata)
-    $functionText = $functionText -replace "begin\s*\{\s*try\s*\{", ("`$0`n" + ("$Begin" -replace '\$', '$$$$'))
-    $functionText = $functionText -replace "process\s*\{\s*try\s*\{", ("`$0`n" + ("$Process" -replace '\$', '$$$$'))
-    $functionText = $functionText -replace "end\s*\{\s*try\s*\{", ("`$0`n" + ("$End" -replace '\$', '$$$$'))
+    $functionText = $functionText -replace 'begin\s*\{\s*try\s*\{', ('$0' + "`n" + ("$Begin" -replace '\$', '$$$$'))
+    $functionText = $functionText -replace 'process\s*\{\s*try\s*\{', ('$0' + "`n" + ("$Process" -replace '\$', '$$$$'))
+    $functionText = $functionText -replace 'end\s*\{\s*try\s*\{', ('$0' + "`n" + ("$End" -replace '\$', '$$$$'))
+    $functionText = $functionText -replace "'$($Command.Name)'", "'$($Command.ModuleName)\$($Command.Name)'"
 
-    Set-Item -Path "Function:Global:$CmdletName" -Value $functionText
+    Set-Item -Path "Function:Global:$($Command.Name)" -Value $functionText
 }
 
 Get-Command -Verb Format -Module Microsoft.PowerShell.Utility | `
-    Select -ExpandProperty Name | `
     ForEach-Object -Process `
         {
             Generate-CmdletWrapper `
-                -CmdletName $_ `
+                -Command $_ `
                 -Begin `
                     {
                         $tempLast = @()
@@ -86,7 +85,7 @@ Get-Command -Verb Format -Module Microsoft.PowerShell.Utility | `
         }
 
 Generate-CmdletWrapper `
-    -CmdletName Out-Default `
+    -Command (Get-Command -Name 'Out-Default' -Module Microsoft.PowerShell.Utility, Microsoft.PowerShell.Core) `
     -Begin `
         {
             $tempLast = @()
@@ -97,7 +96,7 @@ Generate-CmdletWrapper `
         } `
     -End `
         {
-            if ((Test-Path Variable:Global:LastResultCmdletWasFormat) -and ($Global:LastResultCmdletWasFormat))
+            if ((Test-Path -Path Variable:Global:LastResultCmdletWasFormat) -and ($Global:LastResultCmdletWasFormat))
             {
                 $Global:LastResultCmdletWasFormat = $false
             }
