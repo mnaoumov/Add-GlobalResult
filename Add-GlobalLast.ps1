@@ -6,7 +6,7 @@ param
     [switch] $Install
 )
 
-$script:ErrorActionPreference = "Stop"
+$script:ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 function PSScriptRoot { $MyInvocation.ScriptName | Split-Path }
 
@@ -48,9 +48,9 @@ function Generate-CmdletWrapper
     $metadata = New-Object -TypeName System.Management.Automation.CommandMetaData -ArgumentList @($Command)
 
     $functionText = [System.Management.Automation.ProxyCommand]::Create($metadata)
-    $functionText = $functionText -replace "begin\s*\{\s*try\s*\{", ("`$0`n" + ("$Begin" -replace '\$', '$$$$'))
-    $functionText = $functionText -replace "process\s*\{\s*try\s*\{", ("`$0`n" + ("$Process" -replace '\$', '$$$$'))
-    $functionText = $functionText -replace "end\s*\{\s*try\s*\{", ("`$0`n" + ("$End" -replace '\$', '$$$$'))
+    $functionText = $functionText -replace 'begin\s*\{\s*try\s*\{', ('$0' + "`n" + ("$Begin" -replace '\$', '$$$$'))
+    $functionText = $functionText -replace 'process\s*\{\s*try\s*\{', ('$0' + "`n" + ("$Process" -replace '\$', '$$$$'))
+    $functionText = $functionText -replace 'end\s*\{\s*try\s*\{', ('$0' + "`n" + ("$End" -replace '\$', '$$$$'))
 
     Set-Item -Path "Function:Global:$($Command.Name)" -Value $functionText
 }
