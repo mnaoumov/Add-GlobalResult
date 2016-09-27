@@ -14,7 +14,7 @@ trap { throw $Error[0] }
 
 if ($Install)
 {
-    if (-not (Test-Path $PROFILE))
+    if (-not (Test-Path -Path $PROFILE))
     {
         New-Item -Path $PROFILE -ItemType File -Force | Out-Null
     }
@@ -25,7 +25,7 @@ if ($Install)
 
     $installLine = ". `"$profileDir\Add-GlobalLast.ps1`""
 
-    if (-not (Get-Content -Path $PROFILE | Where-Object -FilterScrip{ $_ -eq $installLine }))
+    if (-not (Get-Content -Path $PROFILE | Where-Object -FilterScript { $_ -eq $installLine }))
     {
         Add-Content -Path $PROFILE -Value "`r`n$installLine"
     }
@@ -95,7 +95,7 @@ Generate-CmdletWrapper `
         } `
     -End `
         {
-            if ((Test-Path Variable:Global:LastResultCmdletWasFormat) -and ($Global:LastResultCmdletWasFormat))
+            if ((Test-Path -Path Variable:Global:LastResultCmdletWasFormat) -and ($Global:LastResultCmdletWasFormat))
             {
                 $Global:LastResultCmdletWasFormat = $false
             }
